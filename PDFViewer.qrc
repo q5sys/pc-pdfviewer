@@ -1,0 +1,17 @@
+<RCC>
+  <qresource>
+    <file>icons/pdf.png</file>
+    <file>icons/printer.png</file>
+    <file>icons/windowicon.png</file>
+    <file>icons/back.png</file>
+    <file>icons/forward.png</file>
+    <file>icons/refresh.png</file>
+    <file>icons/stop.png</file>
+    <file>icons/close.png</file>
+    <file>icons/list.png</file>
+    <file>icons/configure.png</file>
+    <file>icons/add.png</file>
+    <file>icons/remove.png</file>
+    <file>icons/search.png</file>
+  </qresource>
+</RCC>

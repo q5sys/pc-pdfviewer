@@ -1,0 +1,12 @@
+#!/usr/bin/env xdg-open
+[Desktop Entry]
+Comment=A simple utility for viewing PDF files.
+Exec=pc-pdfviewer %f
+TryExec=pc-pdfviewer
+Icon=application-pdf
+StartupNotify=true
+Terminal=false
+Type=Application
+Categories=Graphics;
+Name=PC-BSD PDF Viewer
+GenericName=PC-BSD PDF Viewer
