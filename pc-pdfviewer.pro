@@ -4,9 +4,9 @@ LANGUAGE	= C++
 
 CONFIG	+= qt warn_on release
 
-LIBS    += -L../libpcbsd -L/usr/local/lib -lpcbsd-utils -lpcbsd-ui -lpoppler-qt5
+LIBS    += -L/usr/local/lib -ltrueos-utils -ltrueos-ui -lpoppler-qt5
 
-INCLUDEPATH+= ../libpcbsd/utils ../libpcbsd/ui /usr/local/include /usr/local/include/poppler/qt5
+INCLUDEPATH+= /usr/local/include /usr/local/include/poppler/qt5
 
 HEADERS	+= pdfUI.h
 
