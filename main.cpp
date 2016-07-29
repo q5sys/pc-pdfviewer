@@ -35,9 +35,9 @@ int main( int argc, char ** argv )
     QTranslator translator;
     QLocale mylocale;
     QString langCode = mylocale.name();
-    if ( ! QFile::exists( PREFIX + "/share/pcbsd/i18n/pdfviewer_" + langCode + ".qm" ) )
+    if ( ! QFile::exists( PREFIX + "/share/trueos/i18n/pdfviewer_" + langCode + ".qm" ) )
       langCode.truncate(langCode.indexOf("_"));
-    translator.load( QString("pdfviewer_") + langCode, PREFIX + "/share/pcbsd/i18n/" );
+    translator.load( QString("pdfviewer_") + langCode, PREFIX + "/share/trueos/i18n/" );
     a.installTranslator( &translator );
     qDebug() << "Locale:" << langCode;
     QTextCodec::setCodecForLocale( QTextCodec::codecForName("UTF-8") ); //Force Utf-8 compliance

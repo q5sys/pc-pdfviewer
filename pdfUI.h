@@ -1,5 +1,5 @@
-#ifndef _PCBSD_PDF_VIEWER_H
-#define _PCBSD_PDF_VIEWER_H
+#ifndef _TRUEOS_PDF_VIEWER_H
+#define _TRUEOS_PDF_VIEWER_H
 #include <QMainWindow>
 #include <QSpinBox>
 #include <QWidgetAction>
