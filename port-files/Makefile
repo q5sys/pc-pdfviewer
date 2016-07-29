@@ -25,7 +25,7 @@ USE_QT5=        core gui network svg linguist \
 
 USE_GITHUB=	yes
 GH_ACCOUNT=	trueos
-GH_PROJECT=	trueos-utils-qt5
+GH_PROJECT=	pc-pdfviewer
 GH_TAGNAME=	%%GHTAG%%
 
 .include <bsd.port.mk>
