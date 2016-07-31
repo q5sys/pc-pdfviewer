@@ -13,6 +13,9 @@ LICENSE=	BSD2CLAUSE
 LIB_DEPENDS=	libtrueos-ui.so:sysutils/trueos-libqt5 \
 		libpoppler-qt5.so:${PORTSDIR}/graphics/poppler-qt5
 
+WRKSRC_SUBDIR=	src-qt5
+MAKE_ARGS=	PREFIX=${STAGEDIR}${PREFIX}
+
 CONFLICTS=      pcbsd-utils-[0-9]*
 
 MAKE_JOBS_UNSAFE=yes
