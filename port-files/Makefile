@@ -3,7 +3,7 @@
 
 PORTNAME=	pc-pdfviewer
 PORTVERSION=	%%CHGVERSION%%
-CATEGORIES=	sysutils
+CATEGORIES=	graphics
 
 MAINTAINER=	jmaloney@ixsystems.com
 COMMENT=	QT5 PDF Viewer
@@ -20,6 +20,7 @@ ONLY_FOR_ARCHS= amd64
 USE_LDCONFIG=   yes
 USE_QT5=        core gui network svg linguist \
 		buildtools x11extras widgets multimedia
+USES=		qmake
 
 USE_GITHUB=	yes
 GH_ACCOUNT=	trueos
