@@ -341,8 +341,8 @@ void pdfUI::PreLoadPages(){
   //First clean out any pages outside the current range (prev/current/next)
   QList<int> loaded = pageImages.keys(); //quick way to force one page loaded at a time (temporary?)
     for(int i=0; i<loaded.length(); i++){
-      //Allow 2 pages each way to be saved for future reference
-      if(loaded[i] < cpage-2 || loaded[i]>cpage+2){
+      //Allow 20 pages each way to be saved for future reference
+      if(loaded[i] < cpage-20 || loaded[i]>cpage+20){
 	qDebug() << "Removing page from the cache:" << loaded[i];
         pageImages.remove(loaded[i]);
       }
