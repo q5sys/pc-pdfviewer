@@ -21,7 +21,7 @@ CONFLICTS=      pcbsd-utils-[0-9]*
 MAKE_JOBS_UNSAFE=yes
 ONLY_FOR_ARCHS= amd64
 USE_LDCONFIG=   yes
-USE_QT5=        core gui network svg linguist \
+USE_QT5=        core gui network svg linguist concurrent \
 		buildtools x11extras widgets multimedia
 USES=		qmake
 

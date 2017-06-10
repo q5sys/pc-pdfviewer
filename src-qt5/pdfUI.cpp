@@ -13,6 +13,7 @@
 #include <QPainter>
 #include <QMessageBox>
 
+#include <QtConcurrent>
 
 int SCALEFACTOR = 4;
 
@@ -41,7 +42,7 @@ pdfUI::pdfUI(bool debug, QString file) : QMainWindow(), ui(new Ui::pdfUI()){
   QWidget *spacer = new QWidget(this);
     spacer->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
     ui->toolBar->insertWidget(ui->actionStarttimer, spacer);
-	
+
   combo_scale = new QComboBox(this);
     combo_scale->setStatusTip(tr("Change the scaling of the document output"));
     combo_scale->setFocusPolicy(Qt::NoFocus);
@@ -70,7 +71,7 @@ pdfUI::pdfUI(bool debug, QString file) : QMainWindow(), ui(new Ui::pdfUI()){
   nextPageRS = new QShortcut(QKeySequence(tr("Right")), this);
   zoomInS = new QShortcut(QKeySequence(tr("Ctrl+Up")), this);
   zoomOutS = new QShortcut(QKeySequence(tr("Ctrl+Down")), this);
-  
+
   //Setup any signals/slots
   connect(spin_page, SIGNAL(valueChanged(int)), this, SLOT(PageChanged()) );
   connect(combo_scale, SIGNAL(currentIndexChanged(int)),this, SLOT(PageChanged()) );
@@ -94,11 +95,11 @@ pdfUI::pdfUI(bool debug, QString file) : QMainWindow(), ui(new Ui::pdfUI()){
   ui->actionNext->setEnabled(false);
   spin_page->setEnabled(false);
   combo_scale->setEnabled(false);
-  
+
   //Load the input file as necessary
   if(!file.isEmpty()){
     if( OpenPDF(file) ){
-      //Update the UI appearance	    
+      //Update the UI appearance
       QTimer::singleShot(10, this, SLOT(ShowPage()));
     }
   }
@@ -107,7 +108,7 @@ pdfUI::pdfUI(bool debug, QString file) : QMainWindow(), ui(new Ui::pdfUI()){
   ui->menuStart_Presentation->setEnabled(!PMODE && DOC!=0);
   ui->actionPrint->setEnabled(DOC!=0);
   ui->actionPrint_Preview->setEnabled(DOC!=0);
-  
+
   //Disable anything not finished yet
   ui->actionStarttimer->setVisible(false);
   ui->actionTimer->setVisible(false);
@@ -131,11 +132,11 @@ bool pdfUI::OpenPDF(QString filepath){
   LOADINGFILE = true;
  int pages = 0;
   //Verify that the file exists
-	
+
   //Load it using Poppler
   Poppler::Document *TEMPDOC = Poppler::Document::load(filepath);
-  if(TEMPDOC == 0 || TEMPDOC->isLocked()){ 
-    //error loading the file	
+  if(TEMPDOC == 0 || TEMPDOC->isLocked()){
+    //error loading the file
     QMessageBox::warning(this, tr("Error loading file"), tr("There was an error trying to open the file. Is it a PDF document?") );
     LOADINGFILE = false;
     return false;
@@ -157,7 +158,7 @@ bool pdfUI::OpenPDF(QString filepath){
   combo_scale->setEnabled(DOC!=0);
   ui->actionStop_Presentation->setEnabled(false);
   ui->menuStart_Presentation->setEnabled(DOC!=0);
-  
+
   //Update the available/current pages
   spin_page->setRange(1,pages);
   spin_page->setValue(1);
@@ -169,10 +170,10 @@ bool pdfUI::OpenPDF(QString filepath){
 
 QImage pdfUI::OpenPage(int page, bool loadonly){
   bool needload = !pageImages.contains(page);
-  qDebug() <<"Open Page:" << page;
+  //qDebug() <<"Open Page:" << page;
   if(needload){
     //Now load the image for this page and show it
-    qDebug() << " - Loading Page:" << page;
+    //qDebug() << " - Loading Page:" << page;
     Poppler::Page *DOCPAGE = DOC->page(page);
     if(DOCPAGE==0){
       //Error - could not load page
@@ -185,7 +186,7 @@ QImage pdfUI::OpenPage(int page, bool loadonly){
       delete DOCPAGE; //done with the page structure
     }
   }
-  if(loadonly){ 
+  if(loadonly){
     return QImage();
   }else{
     return pageImages.value(page,QImage());
@@ -217,7 +218,7 @@ QScreen* pdfUI::getScreen(bool current, bool &cancelled){
     bool ok = false;
     QString sel = QInputDialog::getItem(this, tr("Select Screen"), tr("Screen:"), names, 0, false, &ok);
     cancelled = !ok;
-    if(!ok){ return screens[0]; } //cancelled - just return the first one 
+    if(!ok){ return screens[0]; } //cancelled - just return the first one
     int index = names.indexOf(sel);
     if(index < 0){ return screens[0]; } //error - should never happen though
     return screens[index]; //return the selected screen
@@ -249,7 +250,7 @@ void pdfUI::startPresentation(bool atStart){
   //Now start at the proper page
   ShowPage(page);
   this->grabKeyboard(); //Grab any keyboard events - even from the presentation window
-}  
+}
 
 // =================
 //        PRIVATE SLOTS
@@ -313,7 +314,7 @@ void pdfUI::ShowPage(int page){
   }
   ui->actionPrev->setEnabled(page>0);
   ui->actionNext->setEnabled(page < (spin_page->maximum()-1) );
-  QTimer::singleShot(10, this, SLOT(PreLoadPages()) ); 
+  QtConcurrent::run(this, &pdfUI::PreLoadPages); //QTimer::singleShot(10, this, SLOT(PreLoadPages()) );
 }
 
 void pdfUI::PageChanged(){
@@ -335,7 +336,7 @@ void pdfUI::ScreenChanged(){
 }
 
 void pdfUI::PreLoadPages(){
-  qDebug() << "Pre-loading pages...";
+  //qDebug() << "Pre-loading pages...";
   //Go through and pre-load a couple pages (previous/next)
   int cpage = CurrentPage();
   //First clean out any pages outside the current range (prev/current/next)
@@ -343,15 +344,20 @@ void pdfUI::PreLoadPages(){
     for(int i=0; i<loaded.length(); i++){
       //Allow 20 pages each way to be saved for future reference
       if(loaded[i] < cpage-20 || loaded[i]>cpage+20){
-	qDebug() << "Removing page from the cache:" << loaded[i];
+	//qDebug() << "Removing page from the cache:" << loaded[i];
         pageImages.remove(loaded[i]);
       }
       QApplication::processEvents();
     }
   //Now make sure that the previous/next pages are loaded (don't care about return values)
   if(cpage > 0){ OpenPage(cpage-1,true); }
-  QApplication::processEvents();
-  if(cpage < spin_page->maximum()-1){ OpenPage(cpage+1,true); }
+  //QApplication::processEvents();
+  int cachemax = cpage +10;
+  while(cpage < spin_page->maximum()-1 && cpage<=cachemax){
+    cpage++;
+    if(!loaded.contains(cpage)){ QtConcurrent::run(this, &pdfUI::OpenPage, cpage, true); }
+  }
+
 }
 
 
@@ -363,7 +369,7 @@ void pdfUI::zoomUp(){
 void pdfUI::zoomDown(){
   int curr = combo_scale->currentIndex();
   if(curr == combo_scale->count()-1){ return; } //already at the bottom
-  combo_scale->setCurrentIndex(curr+1); //change the scale	
+  combo_scale->setCurrentIndex(curr+1); //change the scale
 }
 
 void pdfUI::pageUp(){
