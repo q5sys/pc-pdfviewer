@@ -34,6 +34,7 @@ TRANSLATIONS =  i18n/pdfviewer_af.ts \
 		i18n/pdfviewer_de.ts \
 		i18n/pdfviewer_el.ts \
 		i18n/pdfviewer_en_GB.ts \
+		i18n/pdfviewer_en_AU.ts \
 		i18n/pdfviewer_en_ZA.ts \
 		i18n/pdfviewer_es.ts \
 		i18n/pdfviewer_et.ts \
