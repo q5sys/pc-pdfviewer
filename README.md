@@ -1,4 +1,4 @@
-# pc-pdfviewer
+# pc-pdfviewer [DEPRECATED]
 TrueOS PDF viewer
 
 **Project Information: Table of Contents**
